@@ -1,6 +1,9 @@
 package views
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/omareloui/skrewscore/internal/game"
+)
 
 const MIN_PLAYERS = 2
 const MIN_TEAMS = 2
@@ -14,6 +17,14 @@ templ Setup() {
 				<select name="mode" onchange="toggleMode(this.value)">
 					<option value="solo">Individual Players</option>
 					<option value="pairs">Teams of 2</option>
+				</select>
+			</div>
+			<div class="field">
+				<label>Double Round</label>
+				<select name="double_round">
+					for i := range game.TotalRounds {
+						<option value={ fmt.Sprintf("%d", i+1) } selected?={ i+1 == 4 }>Round { i+1 }</option>
+					}
 				</select>
 			</div>
 			<div id="soloSection">

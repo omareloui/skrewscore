@@ -162,6 +162,9 @@ templ Layout(content templ.Component) {
 				.badge-double {
 					background: var(--warn);
 					color: #000;
+					display: flex;
+					place-items: center;
+					gap: 2px;
 				}
 				.badge-skrew {
 					background: var(--danger);
@@ -180,6 +183,11 @@ templ Layout(content templ.Component) {
 					font-weight: 600;
 					border-bottom: 1px solid var(--border);
 					white-space: nowrap;
+					& span {
+						display: flex;
+						gap: 2px;
+						place-items: center;
+					}
 				}
 				.scoreboard td {
 					padding: 0.55rem 0.7rem;

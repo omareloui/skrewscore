@@ -52,6 +52,7 @@ type Game struct {
 	SoloMode     bool      `bson:"solo_mode"`
 	Rounds       []Round   `bson:"rounds"`
 	CurrentRound int       `bson:"current_round"`
+	DoubleRound  int       `bson:"double_round"`
 	Done         bool      `bson:"done"`
 	CreatedAt    time.Time `bson:"created_at"`
 }

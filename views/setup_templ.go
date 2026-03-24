@@ -8,7 +8,10 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/omareloui/skrewscore/internal/game"
+)
 
 const MIN_PLAYERS = 2
 const MIN_TEAMS = 2
@@ -34,103 +37,149 @@ func Setup() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"card\"><div class=\"section-header\"><h2>New Game</h2></div><form method=\"post\" action=\"/start\"><div class=\"field\"><label>Game Mode</label> <select name=\"mode\" onchange=\"toggleMode(this.value)\"><option value=\"solo\">Individual Players</option> <option value=\"pairs\">Teams of 2</option></select></div><div id=\"soloSection\"><label style=\"margin-bottom:.5rem\">Players <span style=\"color:var(--muted)\">(min ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"card\"><div class=\"section-header\"><h2>New Game</h2></div><form method=\"post\" action=\"/start\"><div class=\"field\"><label>Game Mode</label> <select name=\"mode\" onchange=\"toggleMode(this.value)\"><option value=\"solo\">Individual Players</option> <option value=\"pairs\">Teams of 2</option></select></div><div class=\"field\"><label>Double Round</label> <select name=\"double_round\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(MIN_PLAYERS)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/setup.templ`, Line: 20, Col: 98}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, ")</span></label><div id=\"playerList\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		for i := range MIN_PLAYERS {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"player-row\"><input type=\"text\" name=\"players\" placeholder=\"")
+		for i := range game.TotalRounds {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<option value=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var2 string
+			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", i+1))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/setup.templ`, Line: 26, Col: 44}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if i+1 == 4 {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, " selected")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, ">Round ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
-			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("Player %d", i+1))
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(i + 1)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/setup.templ`, Line: 23, Col: 107}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/setup.templ`, Line: 26, Col: 81}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\" required></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</option>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div><button type=\"button\" class=\"btn btn-ghost btn-sm\" style=\"margin-top:.5rem\" onclick=\"addPlayer()\">+ Add Player</button></div><div id=\"pairsSection\" style=\"display:none\"><label style=\"margin-bottom:.5rem\">Teams <span style=\"color:var(--muted)\">(min ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</select></div><div id=\"soloSection\"><label style=\"margin-bottom:.5rem\">Players <span style=\"color:var(--muted)\">(min ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(MIN_TEAMS)
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(MIN_PLAYERS)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/setup.templ`, Line: 29, Col: 94}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/setup.templ`, Line: 31, Col: 98}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, " teams)</span></label><div id=\"teamList\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, ")</span></label><div id=\"playerList\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for i := range MIN_PLAYERS {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"card\" style=\"padding:.75rem;margin-bottom:.5rem\"><div style=\"font-size:.8rem;color:var(--muted);margin-bottom:.4rem\">Team ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div class=\"player-row\"><input type=\"text\" name=\"players\" placeholder=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var5 string
-			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(i + 1)
+			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("Player %d", i+1))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/setup.templ`, Line: 33, Col: 85}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/setup.templ`, Line: 34, Col: 107}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</div><div class=\"player-row\"><input type=\"text\" name=\"team_p1\" placeholder=\"Player A\"></div><div class=\"player-row\"><input type=\"text\" name=\"team_p2\" placeholder=\"Player B\"></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\" required></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div><button type=\"button\" class=\"btn btn-ghost btn-sm\" style=\"margin-top:.5rem\" onclick=\"addTeam()\">+ Add Team</button></div><button class=\"btn btn-primary btn-full\" type=\"submit\">Start Game →</button></form></div><script>\n\t\ttoggleMode(document.querySelector(\"select[name='mode']\").value);\n\n\t\tfunction toggleMode(v) {\n\t\t\tdocument.getElementById(\"soloSection\").style.display =\n\t\t\t\tv === \"solo\" ? \"\" : \"none\";\n\t\t\tdocument.getElementById(\"pairsSection\").style.display =\n\t\t\t\tv === \"pairs\" ? \"\" : \"none\";\n\t\t}\n\t\tlet playerCount = ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</div><button type=\"button\" class=\"btn btn-ghost btn-sm\" style=\"margin-top:.5rem\" onclick=\"addPlayer()\">+ Add Player</button></div><div id=\"pairsSection\" style=\"display:none\"><label style=\"margin-bottom:.5rem\">Teams <span style=\"color:var(--muted)\">(min ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var6, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(MIN_PLAYERS)
+		var templ_7745c5c3_Var6 string
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(MIN_TEAMS)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/setup.templ`, Line: 53, Col: 34}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/setup.templ`, Line: 40, Col: 94}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, ";\n\t\tfunction addPlayer() {\n\t\t\tplayerCount++;\n\t\t\tconst d = document.createElement(\"div\");\n\t\t\td.className = \"player-row\";\n\t\t\td.innerHTML = `<input type=\"text\" name=\"players\" placeholder=\"Player ${playerCount}\" />\n\t\t\t\t<button type=\"button\" class=\"btn btn-danger btn-sm\" onclick=\"this.parentNode.remove()\">✕</button>`;\n\t\t\tdocument.getElementById(\"playerList\").appendChild(d);\n\t\t\tdocument.querySelector(\"#playerList :last-child input\").focus();\n\t\t}\n\t\tlet teamCount = ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var7, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(MIN_TEAMS)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/setup.templ`, Line: 63, Col: 30}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, " teams)</span></label><div id=\"teamList\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, ";\n\t\tfunction addTeam() {\n\t\t\tteamCount++;\n\t\t\tvar d = document.createElement(\"div\");\n\t\t\td.className = \"card\";\n\t\t\td.style = \"padding:.75rem;margin-bottom:.5rem\";\n\t\t\td.innerHTML = `<div style=\"font-size:.8rem;color:var(--muted);margin-bottom:.4rem\">Team ${teamCount}</div>\n\t\t\t\t<div class=\"player-row\"><input type=\"text\" name=\"team_p1\" placeholder=\"Player A\" /></div>\n\t\t\t\t<div class=\"player-row\"><input type=\"text\" name=\"team_p2\" placeholder=\"Player B\" /></div>`;\n\n\t\t\tdocument.getElementById(\"teamList\").appendChild(d);\n\t\t\tdocument.querySelector(\"#teamList :nth-last-child(2) input\").focus();\n\t\t}\n\t</script>")
+		for i := range MIN_PLAYERS {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<div class=\"card\" style=\"padding:.75rem;margin-bottom:.5rem\"><div style=\"font-size:.8rem;color:var(--muted);margin-bottom:.4rem\">Team ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var7 string
+			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(i + 1)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/setup.templ`, Line: 44, Col: 85}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</div><div class=\"player-row\"><input type=\"text\" name=\"team_p1\" placeholder=\"Player A\"></div><div class=\"player-row\"><input type=\"text\" name=\"team_p2\" placeholder=\"Player B\"></div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</div><button type=\"button\" class=\"btn btn-ghost btn-sm\" style=\"margin-top:.5rem\" onclick=\"addTeam()\">+ Add Team</button></div><button class=\"btn btn-primary btn-full\" type=\"submit\">Start Game →</button></form></div><script>\n\t\ttoggleMode(document.querySelector(\"select[name='mode']\").value);\n\n\t\tfunction toggleMode(v) {\n\t\t\tdocument.getElementById(\"soloSection\").style.display =\n\t\t\t\tv === \"solo\" ? \"\" : \"none\";\n\t\t\tdocument.getElementById(\"pairsSection\").style.display =\n\t\t\t\tv === \"pairs\" ? \"\" : \"none\";\n\t\t}\n\t\tlet playerCount = ")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var8, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(MIN_PLAYERS)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/setup.templ`, Line: 64, Col: 34}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, ";\n\t\tfunction addPlayer() {\n\t\t\tplayerCount++;\n\t\t\tconst d = document.createElement(\"div\");\n\t\t\td.className = \"player-row\";\n\t\t\td.innerHTML = `<input type=\"text\" name=\"players\" placeholder=\"Player ${playerCount}\" />\n\t\t\t\t<button type=\"button\" class=\"btn btn-danger btn-sm\" onclick=\"this.parentNode.remove()\">✕</button>`;\n\t\t\tdocument.getElementById(\"playerList\").appendChild(d);\n\t\t\tdocument.querySelector(\"#playerList :last-child input\").focus();\n\t\t}\n\t\tlet teamCount = ")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var9, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(MIN_TEAMS)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/setup.templ`, Line: 74, Col: 30}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, ";\n\t\tfunction addTeam() {\n\t\t\tteamCount++;\n\t\t\tvar d = document.createElement(\"div\");\n\t\t\td.className = \"card\";\n\t\t\td.style = \"padding:.75rem;margin-bottom:.5rem\";\n\t\t\td.innerHTML = `<div style=\"font-size:.8rem;color:var(--muted);margin-bottom:.4rem\">Team ${teamCount}</div>\n\t\t\t\t<div class=\"player-row\"><input type=\"text\" name=\"team_p1\" placeholder=\"Player A\" /></div>\n\t\t\t\t<div class=\"player-row\"><input type=\"text\" name=\"team_p2\" placeholder=\"Player B\" /></div>`;\n\n\t\t\tdocument.getElementById(\"teamList\").appendChild(d);\n\t\t\tdocument.querySelector(\"#teamList :nth-last-child(2) input\").focus();\n\t\t}\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

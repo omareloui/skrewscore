@@ -21,8 +21,11 @@ templ Round(g *game.Game, r *game.Round, gameID string, errMsg string) {
 	<div class="card">
 		<div class="section-header">
 			<h2>Round { fmt.Sprintf("%d", r.Number) }</h2>
-			if IsRound4(r.Number) {
-				<span class="badge badge-double">✕2 DOUBLE ROUND</span>
+			if IsDoubleRound(g, r.Number) {
+				<span class="badge badge-double">
+					@DoubleIcon("14px")
+					DOUBLE ROUND
+				</span>
 			}
 		</div>
 		if !g.SoloMode {

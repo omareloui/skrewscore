@@ -4,7 +4,8 @@
       "Bash(templ generate:*)",
       "Bash(go build:*)",
       "Bash(go vet:*)",
-      "Bash(go mod:*)"
+      "Bash(go mod:*)",
+      "Bash(make templ:*)"
     ]
   }
 }

@@ -14,10 +14,12 @@ templ Scoretable(g *game.Game) {
 							for _, r := range g.Rounds {
 								if r.Locked {
 									<th>
-										R{ FormatRoundNumber(r.Number) }
-										if IsRound4(r.Number) {
-											{ " ✕2" }
-										}
+										<span>
+											R{ FormatRoundNumber(r.Number) }
+											if IsDoubleRound(g, r.Number) {
+												@DoubleIcon("14px", WithColor("var(--warn)"))
+											}
+										</span>
 									</th>
 								}
 							}
@@ -34,7 +36,9 @@ templ Scoretable(g *game.Game) {
 											if i < len(r.Entries) {
 												<div class="score-cell-val">{ FormatScore(r.Entries[i].Final) }</div>
 												if r.Entries[i].CalledSkrew {
-													<div class="score-cell-tag">📢 Skrew</div>
+													<div class="score-cell-tag">
+														@ShoutIcon("16px", WithColor("var(--danger)"))
+													</div>
 												}
 											}
 										</td>

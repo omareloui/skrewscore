@@ -14,7 +14,7 @@ func FormatScore(f float64) string {
 	return fmt.Sprintf("%.1f", f)
 }
 
-func IsRound4(n int) bool { return n == 4 }
+func IsDoubleRound(g *game.Game, n int) bool { return n == g.DoubleRound }
 
 func FormatRoundNumber(n int) string {
 	return fmt.Sprintf("%d", n)

@@ -26,9 +26,15 @@ func Start(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	mode := r.FormValue("mode")
 
+	doubleRound := 4
+	if dr, err := strconv.Atoi(r.FormValue("double_round")); err == nil && dr >= 1 && dr <= game.TotalRounds {
+		doubleRound = dr
+	}
+
 	g := &game.Game{
-		ID:        gonanoid.Must(ID_LENGTH),
-		CreatedAt: time.Now(),
+		ID:          gonanoid.Must(ID_LENGTH),
+		CreatedAt:   time.Now(),
+		DoubleRound: doubleRound,
 	}
 
 	if mode == "pairs" {
@@ -218,8 +224,8 @@ func SubmitRound(w http.ResponseWriter, r *http.Request) {
 		e := &entries[i]
 		base := e.TeamScore
 
-		// Round 4: double the base first
-		if cur.Number == 4 {
+		// Double round: double the base first
+		if cur.Number == g.DoubleRound {
 			base *= 2
 		}
 

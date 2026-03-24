@@ -98,7 +98,7 @@ func Done(g *game.Game, gameID string, winners []game.Team) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			if IsRound4(r.Number) {
+			if IsDoubleRound(g, r.Number) {
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(" ✕2")
 				if templ_7745c5c3_Err != nil {
