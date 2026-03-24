@@ -54,6 +54,34 @@ templ DoubleIcon(size string, opts ...IconOptFunc) {
 	</span>
 }
 
+templ QuadrupleIcon(size string, opts ...IconOptFunc) {
+	{{ _opts := parseOpts(size, opts...) }}
+	<span style={ _opts.styles }>
+		<svg viewbox="0 0 245 245" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+			<g
+				transform="matrix(3.7795276,0,0,3.7795276,404.23278,-591.24661)"
+			>
+				<g
+					transform="translate(2.9888352,89.000868)"
+				>
+					<path
+						style={ "fill: none", "stroke-width: 2.5", templ.SafeCSS(fmt.Sprintf("stroke: %s", _opts.color)) }
+						d="m -91.692093,68.683128 h 26 c 9.418,0 17,7.582 17,17 v 26.000002 c 0,9.418 -7.582,17 -17,17 h -26 c -9.417997,0 -16.999997,-7.582 -16.999997,-17 V 85.683128 c 0,-9.418 7.582,-17 16.999997,-17 z"
+					></path>
+					<path
+						style={ templ.SafeCSS(fmt.Sprintf("fill: %s", _opts.color)) }
+						d="m -86.136993,101.7092 6.5951,9.68209 h -5.10547 l -4.44342,-6.48014 -4.40523,6.48014 h -5.13094 l 6.59511,-9.68209 -6.34047,-9.288198 h 5.11821 l 4.16332,6.11166 4.15058,-6.11166 h 5.14368 z"
+					></path>
+					<path
+						style={ templ.SafeCSS(fmt.Sprintf("fill: %s", _opts.color)) }
+						d="m -58.757229,106.18025 h -3.034174 v 5.21104 h -5.18632 v -5.21104 h -10.760732 v -3.69703 l 11.042981,-16.231693 h 4.90407 v 15.809183 h 3.034174 z m -8.220494,-4.11954 v -4.260387 q 0,-0.80982 0.03529,-1.971744 0.03529,-1.161923 0.07056,-2.147795 0.07056,-1.021086 0.105843,-1.337965 h -0.141126 q -0.317528,0.704187 -0.670339,1.373179 -0.352811,0.668983 -0.846746,1.37318 l -4.621823,6.971532 z"
+					></path>
+				</g>
+			</g>
+		</svg>
+	</span>
+}
+
 templ ShoutIcon(size string, opts ...IconOptFunc) {
 	{{ _opts := parseOpts(size, opts...) }}
 	<span style={ _opts.styles }>

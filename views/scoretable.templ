@@ -16,7 +16,9 @@ templ Scoretable(g *game.Game) {
 									<th>
 										<span>
 											R{ FormatRoundNumber(r.Number) }
-											if IsDoubleRound(g, r.Number) {
+											if IsDoubleRound(g, r.Number) && r.LoserDoubled {
+												@QuadrupleIcon("14px", WithColor("var(--warn)"))
+											} else if IsDoubleRound(g, r.Number) || r.LoserDoubled {
 												@DoubleIcon("14px", WithColor("var(--warn)"))
 											}
 										</span>

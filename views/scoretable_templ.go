@@ -55,7 +55,12 @@ func Scoretable(g *game.Game) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					if IsDoubleRound(g, r.Number) {
+					if IsDoubleRound(g, r.Number) && r.LoserDoubled {
+						templ_7745c5c3_Err = QuadrupleIcon("14px", WithColor("var(--warn)")).Render(ctx, templ_7745c5c3_Buffer)
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+					} else if IsDoubleRound(g, r.Number) || r.LoserDoubled {
 						templ_7745c5c3_Err = DoubleIcon("14px", WithColor("var(--warn)")).Render(ctx, templ_7745c5c3_Buffer)
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
@@ -79,7 +84,7 @@ func Scoretable(g *game.Game) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(team.DisplayName())
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/scoretable.templ`, Line: 32, Col: 32}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/scoretable.templ`, Line: 34, Col: 32}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -103,7 +108,7 @@ func Scoretable(g *game.Game) templ.Component {
 							var templ_7745c5c3_Var4 string
 							templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(FormatScore(r.Entries[i].Final))
 							if templ_7745c5c3_Err != nil {
-								return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/scoretable.templ`, Line: 37, Col: 73}
+								return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/scoretable.templ`, Line: 39, Col: 73}
 							}
 							_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 							if templ_7745c5c3_Err != nil {
@@ -141,7 +146,7 @@ func Scoretable(g *game.Game) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(FormatScore(g.TotalScore(i)))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/scoretable.templ`, Line: 47, Col: 50}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/scoretable.templ`, Line: 49, Col: 50}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {

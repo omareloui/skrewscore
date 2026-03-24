@@ -39,22 +39,24 @@ type RoundEntry struct {
 }
 
 type Round struct {
-	Number      int          `bson:"number"`
-	Mode        TeamMode     `bson:"mode"`
-	Entries     []RoundEntry `bson:"entries"`
-	Locked      bool         `bson:"locked"`
-	SkrewCaller int          `bson:"skrew_caller"`
+	Number       int          `bson:"number"`
+	Mode         TeamMode     `bson:"mode"`
+	Entries      []RoundEntry `bson:"entries"`
+	Locked       bool         `bson:"locked"`
+	SkrewCaller  int          `bson:"skrew_caller"`
+	LoserDoubled bool         `bson:"loser_doubled"`
 }
 
 type Game struct {
-	ID           string    `bson:"_id"`
-	Teams        []Team    `bson:"teams"`
-	SoloMode     bool      `bson:"solo_mode"`
-	Rounds       []Round   `bson:"rounds"`
-	CurrentRound int       `bson:"current_round"`
-	DoubleRound  int       `bson:"double_round"`
-	Done         bool      `bson:"done"`
-	CreatedAt    time.Time `bson:"created_at"`
+	ID                string    `bson:"_id"`
+	Teams             []Team    `bson:"teams"`
+	SoloMode          bool      `bson:"solo_mode"`
+	Rounds            []Round   `bson:"rounds"`
+	CurrentRound      int       `bson:"current_round"`
+	DoubleRound       int       `bson:"double_round"`
+	LoserDoubleUsed   bool      `bson:"loser_double_used"`
+	Done              bool      `bson:"done"`
+	CreatedAt         time.Time `bson:"created_at"`
 }
 
 func (g *Game) TotalScore(teamIdx int) float64 {

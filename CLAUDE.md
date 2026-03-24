@@ -31,10 +31,11 @@ Both env vars are optional and default to the values above.
 | POST   | `/start`                      | Create game → redirect to game URL |
 | POST   | `/start-new`                  | HTMX: return setup partial         |
 | GET    | `/game/<uuid>`                | View/edit game in progress or done |
-| POST   | `/game/<uuid>/set-round-mode` | Toggle sum/average for teams       |
-| POST   | `/game/<uuid>/submit-round`   | Lock a round with scores           |
+| POST   | `/game/<id>/set-round-mode`      | Toggle sum/average for teams            |
+| POST   | `/game/<id>/toggle-loser-double` | Toggle the loser's double for the round |
+| POST   | `/game/<id>/submit-round`        | Lock a round with scores                |
 
-Each game gets a UUID on creation. Anyone with the `/game/<uuid>` link has full edit access.
+Each game gets a nano ID on creation. Anyone with the `/game/<id>` link has full edit access.
 
 ### Key Design Decisions
 
@@ -102,8 +103,9 @@ At the start of **their turn**, instead of drawing, a player may call
 
 1. **Compute each player/team's raw score** (sum of their card values, or sum/average for teams).
 2. **Find the minimum raw score** across all players/teams.
-3. **Apply round modifiers:**
-   - **Round 4 is a double round** — multiply the raw score by 2 before applying any other modifier.
+3. **Apply round modifiers (in order):**
+   - **Double round** (configurable, default round 4) — multiply the raw score by 2.
+   - **Loser's Double** (available from round 3) — the player/team with the highest score from the previous round may choose to double the current round. Stacks with the double round (→ ×4).
 4. **Apply the Skrew penalty:**
    - If the Skrew caller's raw score **equals the minimum** → they score **0** (they win the round).
    - If the Skrew caller's raw score is **not the minimum** → their score is **doubled** (applied after the round-4 multiplier if applicable).
@@ -115,11 +117,14 @@ At the start of **their turn**, instead of drawing, a player may call
 ```text
 base = raw_score
 
-if round == 4:
+if round == double_round:
     base = base * 2
 
+if loser_doubled:
+    base = base * 2       ← stacks with double round → ×4
+
 if called_skrew AND raw_score != min_score:
-    base = base * 2       ← penalty (applied after round-4 doubling)
+    base = base * 2       ← penalty (applied after multipliers)
 
 if raw_score == min_score:
     base = 0              ← winner(s), regardless of skrew status

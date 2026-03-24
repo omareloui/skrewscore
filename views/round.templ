@@ -55,6 +55,31 @@ templ Round(g *game.Game, r *game.Round, gameID string, errMsg string) {
 				</div>
 			</div>
 		}
+		if r.Number >= 3 && (r.LoserDoubled || !g.LoserDoubleUsed) {
+			<div class="field">
+				<label>Loser's Double</label>
+				<button
+					type="button"
+					class={ "btn btn-full", templ.KV("btn-danger", r.LoserDoubled), templ.KV("btn-ghost", !r.LoserDoubled) }
+					style="display:flex;slign-items:center;justify-content:center;gap:3px;"
+					hx-post={ fmt.Sprintf("/game/%s/toggle-loser-double", gameID) }
+					hx-target="#main"
+					hx-swap="innerHTML"
+				>
+					if r.LoserDoubled {
+						if IsDoubleRound(g, r.Number) {
+							@QuadrupleIcon("16px", WithColor("var(--text)"))
+							QUADRUPLE ROUND (loser doubled)
+						} else {
+							@DoubleIcon("16px", WithColor("var(--text)"))
+							DOUBLE ROUND (loser doubled)
+						}
+					} else {
+						Enable Loser's Double
+					}
+				</button>
+			</div>
+		}
 		if errMsg != "" {
 			<div class="err">⚠ { errMsg }</div>
 		}

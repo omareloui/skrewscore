@@ -30,9 +30,10 @@ Both env vars are optional and fall back to defaults.
 | GET    | `/`                           | Setup page (new game form)         |
 | POST   | `/start`                      | Create game → redirect to game URL |
 | POST   | `/start-new`                  | HTMX: return setup partial         |
-| GET    | `/game/<uuid>`                | View/edit game in progress or done |
-| POST   | `/game/<uuid>/set-round-mode` | Toggle sum/average for teams       |
-| POST   | `/game/<uuid>/submit-round`   | Lock a round with scores           |
+| GET    | `/game/<id>`                         | View/edit game in progress or done      |
+| POST   | `/game/<id>/set-round-mode`          | Toggle sum/average for teams            |
+| POST   | `/game/<id>/toggle-loser-double`     | Toggle the loser's double for the round |
+| POST   | `/game/<id>/submit-round`            | Lock a round with scores                |
 
 ## Game Rules
 
@@ -47,8 +48,11 @@ calls **"Skrew"** to end the round — but if they're wrong, they're penalized.
 ```plain
 base = raw_score
 
-if round == 4:
+if round == double_round:
     base = base * 2
+
+if loser_doubled:
+    base = base * 2   # stacks → ×4 on the double round
 
 if called_skrew AND raw_score != min_score:
     base = base * 2   # penalty
@@ -56,6 +60,8 @@ if called_skrew AND raw_score != min_score:
 if raw_score == min_score:
     base = 0          # winner(s)
 ```
+
+**Loser's Double** — from round 3 onward, the player/team with the highest score (the loser of the previous round) may choose to double the current round's scores. If it's already the designated double round, all scores are quadrupled instead.
 
 ## Design Notes
 

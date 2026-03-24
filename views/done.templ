@@ -1,9 +1,6 @@
 package views
 
-import (
-	"fmt"
-	"github.com/omareloui/skrewscore/internal/game"
-)
+import "github.com/omareloui/skrewscore/internal/game"
 
 templ Done(g *game.Game, gameID string, winners []game.Team) {
 	@Sharebox(gameID)
@@ -30,10 +27,14 @@ templ Done(g *game.Game, gameID string, winners []game.Team) {
 						<th>Player / Team</th>
 						for _, r := range g.Rounds {
 							<th>
-								R{ fmt.Sprintf("%d", r.Number) }
-								if IsDoubleRound(g, r.Number) {
-									{ " ✕2" }
-								}
+								<span>
+									R{ FormatRoundNumber(r.Number) }
+									if IsDoubleRound(g, r.Number) && r.LoserDoubled {
+										@QuadrupleIcon("14px", WithColor("var(--warn)"))
+									} else if IsDoubleRound(g, r.Number) || r.LoserDoubled {
+										@DoubleIcon("14px", WithColor("var(--warn)"))
+									}
+								</span>
 							</th>
 						}
 						<th>Total</th>
@@ -49,7 +50,9 @@ templ Done(g *game.Game, gameID string, winners []game.Team) {
 										if i < len(r.Entries) {
 											<div class="score-cell-val">{ FormatScore(r.Entries[i].Final) }</div>
 											if r.Entries[i].CalledSkrew {
-												<div class="score-cell-tag">📢 Skrew</div>
+												<div class="score-cell-tag">
+													@ShoutIcon("16px", WithColor("var(--danger)"))
+												</div>
 											}
 										}
 									</td>
@@ -64,7 +67,9 @@ templ Done(g *game.Game, gameID string, winners []game.Team) {
 										if i < len(r.Entries) {
 											<div class="score-cell-val">{ FormatScore(r.Entries[i].Final) }</div>
 											if r.Entries[i].CalledSkrew {
-												<div class="score-cell-tag">📢 Skrew</div>
+												<div class="score-cell-tag">
+													@ShoutIcon("16px", WithColor("var(--danger)"))
+												</div>
 											}
 										}
 									</td>

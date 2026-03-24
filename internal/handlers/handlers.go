@@ -119,6 +119,33 @@ func Game(w http.ResponseWriter, r *http.Request) {
 	renderFull(w, r, views.Round(g, g.CurrentRoundData(), g.ID, ""))
 }
 
+func ToggleLoserDouble(w http.ResponseWriter, r *http.Request) {
+	id := extractGameID(r.URL.Path)
+
+	g, err := mongodb.LoadGame(id)
+	if err != nil || g == nil {
+		render(w, r, views.NotFound())
+		return
+	}
+
+	cur := g.CurrentRoundData()
+	if cur != nil {
+		if cur.LoserDoubled {
+			// turning off — free the token
+			cur.LoserDoubled = false
+			g.LoserDoubleUsed = false
+		} else if !g.LoserDoubleUsed {
+			// turning on — consume the token
+			cur.LoserDoubled = true
+			g.LoserDoubleUsed = true
+		}
+		g.Rounds[g.CurrentRound-1] = *cur
+		mongodb.SaveGame(g)
+	}
+
+	render(w, r, views.Round(g, g.CurrentRoundData(), g.ID, ""))
+}
+
 func SetRoundMode(w http.ResponseWriter, r *http.Request) {
 	id := extractGameID(r.URL.Path)
 	r.ParseForm()
@@ -226,6 +253,11 @@ func SubmitRound(w http.ResponseWriter, r *http.Request) {
 
 		// Double round: double the base first
 		if cur.Number == g.DoubleRound {
+			base *= 2
+		}
+
+		// Loser doubled: an extra ×2 on top (stacks with double round → ×4)
+		if cur.LoserDoubled {
 			base *= 2
 		}
 
