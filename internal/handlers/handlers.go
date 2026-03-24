@@ -9,12 +9,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/uuid"
+	gonanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/omareloui/skrewscore/internal/eval"
 	"github.com/omareloui/skrewscore/internal/game"
 	"github.com/omareloui/skrewscore/internal/mongodb"
 	"github.com/omareloui/skrewscore/views"
 )
+
+const ID_LENGTH = 5
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	renderFull(w, r, views.Setup())
@@ -25,7 +27,7 @@ func Start(w http.ResponseWriter, r *http.Request) {
 	mode := r.FormValue("mode")
 
 	g := &game.Game{
-		ID:        uuid.New().String(),
+		ID:        gonanoid.Must(ID_LENGTH),
 		CreatedAt: time.Now(),
 	}
 

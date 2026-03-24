@@ -4,8 +4,8 @@ go 1.25.7
 
 require (
 	github.com/a-h/templ v0.3.1001
-	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
+	github.com/matoous/go-nanoid/v2 v2.1.0
 	go.mongodb.org/mongo-driver v1.17.9
 )
 
