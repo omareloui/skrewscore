@@ -53,9 +53,13 @@ templ Layout(content templ.Component) {
 					font-size: 2.5rem;
 					font-weight: 900;
 					letter-spacing: -1px;
-				}
-				.logo-title span {
-					color: var(--accent2);
+					& span {
+						color: var(--accent2);
+					}
+					& a {
+						text-decoration: none;
+						color: var(--text);
+					}
 				}
 				.logo-sub {
 					color: var(--muted);
@@ -340,7 +344,7 @@ templ Layout(content templ.Component) {
 		</head>
 		<body>
 			<div class="logo">
-				<div class="logo-title"><span>سكرو</span> · Skrew</div>
+				<div class="logo-title"><a href="/"><span>سكرو</span> · Skrew</a></div>
 				<div class="logo-sub">Score Tracker</div>
 			</div>
 			<div id="main">
