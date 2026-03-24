@@ -7,6 +7,9 @@ templ Layout(content templ.Component) {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>سكرو · Skrew Scorer</title>
+			<link rel="preconnect" href="https://fonts.googleapis.com"/>
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+			<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
 			<script src="https://unpkg.com/htmx.org@1.9.12"></script>
 			<style>
 				:root {
@@ -31,7 +34,7 @@ templ Layout(content templ.Component) {
 				body {
 					background: var(--bg);
 					color: var(--text);
-					font-family: "Segoe UI", system-ui, sans-serif;
+					font-family: "Roboto", "Segoe UI", system-ui, sans-serif;
 					min-height: 100vh;
 					padding: 1.5rem 1rem;
 					max-width: 640px;
@@ -44,6 +47,9 @@ templ Layout(content templ.Component) {
 				h3 {
 					font-size: 1rem;
 					font-weight: 600;
+				}
+				.marhey-font {
+					font-family: "Marhey", "Roboto", "Segoe UI", system-ui, sans-serif;
 				}
 				.logo {
 					text-align: center;
@@ -352,7 +358,7 @@ templ Layout(content templ.Component) {
 		</head>
 		<body>
 			<div class="logo">
-				<div class="logo-title"><a href="/"><span>سكرو</span> · Skrew</a></div>
+				<div class="logo-title"><a href="/"><span class="marhey-font">سكرو</span> · Skrew</a></div>
 				<div class="logo-sub">Score Tracker</div>
 			</div>
 			<div id="main">
