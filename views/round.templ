@@ -1,0 +1,93 @@
+package views
+
+import (
+	"fmt"
+	"github.com/omareloui/skrewscore/internal/game"
+)
+
+templ Round(g *game.Game, r *game.Round, gameID string, errMsg string) {
+	@Sharebox(gameID)
+	<div class="progress-bar">
+		for i := 0; i < 5; i++ {
+			if i+1 < g.CurrentRound {
+				<div class="progress-pip done"></div>
+			} else if i+1 == g.CurrentRound {
+				<div class="progress-pip active"></div>
+			} else {
+				<div class="progress-pip"></div>
+			}
+		}
+	</div>
+	<div class="card">
+		<div class="section-header">
+			<h2>Round { fmt.Sprintf("%d", r.Number) }</h2>
+			if IsRound4(r.Number) {
+				<span class="badge badge-double">✕2 DOUBLE ROUND</span>
+			}
+		</div>
+		if !g.SoloMode {
+			<div class="field">
+				<label>Team Scoring Mode</label>
+				<div class="mode-toggle">
+					<button
+						type="button"
+						class={ "mode-btn", templ.KV("active", r.Mode == game.ModeSum) }
+						hx-post={ fmt.Sprintf("/game/%s/set-round-mode", gameID) }
+						hx-vals='{"mode":"sum"}'
+						hx-target="#main"
+						hx-swap="innerHTML"
+					>
+						Sum (add both)
+					</button>
+					<button
+						type="button"
+						class={ "mode-btn", templ.KV("active", r.Mode == game.ModeAverage) }
+						hx-post={ fmt.Sprintf("/game/%s/set-round-mode", gameID) }
+						hx-vals='{"mode":"average"}'
+						hx-target="#main"
+						hx-swap="innerHTML"
+					>
+						Average (mean)
+					</button>
+				</div>
+			</div>
+		}
+		if errMsg != "" {
+			<div class="err">⚠ { errMsg }</div>
+		}
+		<form hx-post={ fmt.Sprintf("/game/%s/submit-round", gameID) } hx-target="#main" hx-swap="innerHTML">
+			for i, team := range g.Teams {
+				<div class="team-entry">
+					<div class="team-name">{ team.DisplayName() }</div>
+					if g.SoloMode {
+						<div class="field">
+							<label>Score</label>
+							<input type="text" name={ fmt.Sprintf("score_%d_0", i) } placeholder="e.g. 10+5" autocomplete="off"/>
+						</div>
+					} else {
+						for pi, p := range team.Players {
+							<div class="field">
+								<label>{ p.Name }</label>
+								<input type="text" name={ fmt.Sprintf("score_%d_%d", i, pi) } placeholder="e.g. 10+5" autocomplete="off"/>
+							</div>
+						}
+					}
+				</div>
+			}
+			<div class="skrew-section">
+				<div class="field">
+					<label>Who called Skrew? <span style="color:var(--danger)">*</span></label>
+					<select name="skrew_caller" required>
+						<option value="">— Select —</option>
+						for i, team := range g.Teams {
+							<option value={ fmt.Sprintf("%d", i) }>{ team.DisplayName() }</option>
+						}
+					</select>
+				</div>
+			</div>
+			<div class="hint">Scores accept expressions: <code>10+5</code>, <code>3*4</code>, <code>(8+2)/2</code></div>
+			<button class="btn btn-primary btn-full" type="submit">Lock Round { fmt.Sprintf("%d", r.Number) } →</button>
+		</form>
+	</div>
+	@Scoretable(g)
+}

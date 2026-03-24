@@ -1,0 +1,77 @@
+package views
+
+import "fmt"
+
+const MIN_PLAYERS = 2
+const MIN_TEAMS = 2
+
+templ Setup() {
+	<div class="card">
+		<div class="section-header"><h2>New Game</h2></div>
+		<form method="post" action="/start">
+			<div class="field">
+				<label>Game Mode</label>
+				<select name="mode" onchange="toggleMode(this.value)">
+					<option value="solo">Individual Players</option>
+					<option value="pairs">Teams of 2</option>
+				</select>
+			</div>
+			<div id="soloSection">
+				<label style="margin-bottom:.5rem">Players <span style="color:var(--muted)">(min { MIN_PLAYERS })</span></label>
+				<div id="playerList">
+					for i := range MIN_PLAYERS {
+						<div class="player-row"><input type="text" name="players" placeholder={ fmt.Sprintf("Player %d", i+1) } required/></div>
+					}
+				</div>
+				<button type="button" class="btn btn-ghost btn-sm" style="margin-top:.5rem" onclick="addPlayer()">+ Add Player</button>
+			</div>
+			<div id="pairsSection" style="display:none">
+				<label style="margin-bottom:.5rem">Teams <span style="color:var(--muted)">(min { MIN_TEAMS } teams)</span></label>
+				<div id="teamList">
+					for i := range MIN_PLAYERS {
+						<div class="card" style="padding:.75rem;margin-bottom:.5rem">
+							<div style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">Team { i+1 }</div>
+							<div class="player-row"><input type="text" name="team_p1" placeholder="Player A"/></div>
+							<div class="player-row"><input type="text" name="team_p2" placeholder="Player B"/></div>
+						</div>
+					}
+				</div>
+				<button type="button" class="btn btn-ghost btn-sm" style="margin-top:.5rem" onclick="addTeam()">+ Add Team</button>
+			</div>
+			<button class="btn btn-primary btn-full" type="submit">Start Game →</button>
+		</form>
+	</div>
+	<script>
+		toggleMode(document.querySelector("select[name='mode']").value);
+
+		function toggleMode(v) {
+			document.getElementById("soloSection").style.display =
+				v === "solo" ? "" : "none";
+			document.getElementById("pairsSection").style.display =
+				v === "pairs" ? "" : "none";
+		}
+		let playerCount = {{ MIN_PLAYERS }};
+		function addPlayer() {
+			playerCount++;
+			const d = document.createElement("div");
+			d.className = "player-row";
+			d.innerHTML = `<input type="text" name="players" placeholder="Player ${playerCount}" />
+				<button type="button" class="btn btn-danger btn-sm" onclick="this.parentNode.remove()">✕</button>`;
+			document.getElementById("playerList").appendChild(d);
+			document.querySelector("#playerList :last-child input").focus();
+		}
+		let teamCount = {{ MIN_TEAMS }};
+		function addTeam() {
+			teamCount++;
+			var d = document.createElement("div");
+			d.className = "card";
+			d.style = "padding:.75rem;margin-bottom:.5rem";
+			d.innerHTML = `<div style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">Team ${teamCount}</div>
+				<div class="player-row"><input type="text" name="team_p1" placeholder="Player A" /></div>
+				<div class="player-row"><input type="text" name="team_p2" placeholder="Player B" /></div>`;
+
+			document.getElementById("teamList").appendChild(d);
+			document.querySelector("#teamList :nth-last-child(2) input").focus();
+		}
+	</script>
+}

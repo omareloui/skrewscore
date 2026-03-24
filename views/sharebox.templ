@@ -1,0 +1,23 @@
+package views
+
+templ Sharebox(gameID string) {
+	<div class="share-box" data-game-id={ gameID }>
+		<span style="font-size:0.78rem;color:var(--muted);flex-shrink:0">🔗 Share:</span>
+		<span class="share-url" id="shareUrl"></span>
+		<button class="copy-btn" onclick="copyShareUrl()">Copy</button>
+	</div>
+	<script>
+(function(){
+  var el = document.querySelector('.share-box[data-game-id]');
+  var u = window.location.origin + '/game/' + el.dataset.gameId;
+  document.getElementById('shareUrl').textContent = u;
+  window.copyShareUrl = function() {
+    navigator.clipboard.writeText(u).then(function(){
+      var b = document.querySelector('.copy-btn');
+      b.textContent = 'Copied!';
+      setTimeout(function(){ b.textContent = 'Copy'; }, 1500);
+    });
+  };
+})();
+	</script>
+}

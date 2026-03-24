@@ -1,0 +1,83 @@
+package views
+
+import (
+	"fmt"
+	"github.com/omareloui/skrewscore/internal/game"
+)
+
+templ Done(g *game.Game, gameID string, winners []game.Team) {
+	@Sharebox(gameID)
+	<div class="winner-banner">
+		<div class="trophy">🏆</div>
+		<h2>Game Over!</h2>
+		<div style="color:var(--muted);margin:.4rem 0 1rem">
+			if len(winners) > 1 {
+				Winners
+			} else {
+				Winner
+			}
+		</div>
+		for _, w := range winners {
+			<div class="winner-name">{ w.DisplayName() }</div>
+		}
+	</div>
+	<div class="card">
+		<h3 class="card-title">Final Scores</h3>
+		<div style="overflow-x:auto">
+			<table class="scoreboard">
+				<thead>
+					<tr>
+						<th>Player / Team</th>
+						for _, r := range g.Rounds {
+							<th>
+								R{ fmt.Sprintf("%d", r.Number) }
+								if IsRound4(r.Number) {
+									{ " ✕2" }
+								}
+							</th>
+						}
+						<th>Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					for i, team := range g.Teams {
+						if IsWinner(team, winners) {
+							<tr class="winner-row">
+								<td>🏆 { team.DisplayName() }</td>
+								for _, r := range g.Rounds {
+									<td>
+										if i < len(r.Entries) {
+											<div class="score-cell-val">{ FormatScore(r.Entries[i].Final) }</div>
+											if r.Entries[i].CalledSkrew {
+												<div class="score-cell-tag">📢 Skrew</div>
+											}
+										}
+									</td>
+								}
+								<td><strong>{ FormatScore(g.TotalScore(i)) }</strong></td>
+							</tr>
+						} else {
+							<tr>
+								<td>{ team.DisplayName() }</td>
+								for _, r := range g.Rounds {
+									<td>
+										if i < len(r.Entries) {
+											<div class="score-cell-val">{ FormatScore(r.Entries[i].Final) }</div>
+											if r.Entries[i].CalledSkrew {
+												<div class="score-cell-tag">📢 Skrew</div>
+											}
+										}
+									</td>
+								}
+								<td><strong>{ FormatScore(g.TotalScore(i)) }</strong></td>
+							</tr>
+						}
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<form hx-post="/start-new" hx-target="#main" hx-swap="innerHTML">
+		<button class="btn btn-ghost btn-full" type="submit">New Game</button>
+	</form>
+}

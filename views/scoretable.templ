@@ -1,0 +1,51 @@
+package views
+
+import "github.com/omareloui/skrewscore/internal/game"
+
+templ Scoretable(g *game.Game) {
+	if HasLockedRounds(g.Rounds) {
+		<div class="card">
+			<h3 class="card-title">Scoreboard</h3>
+			<div style="overflow-x:auto">
+				<table class="scoreboard">
+					<thead>
+						<tr>
+							<th>Player / Team</th>
+							for _, r := range g.Rounds {
+								if r.Locked {
+									<th>
+										R{ FormatRoundNumber(r.Number) }
+										if IsRound4(r.Number) {
+											{ " ✕2" }
+										}
+									</th>
+								}
+							}
+							<th>Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						for i, team := range g.Teams {
+							<tr>
+								<td>{ team.DisplayName() }</td>
+								for _, r := range g.Rounds {
+									if r.Locked {
+										<td>
+											if i < len(r.Entries) {
+												<div class="score-cell-val">{ FormatScore(r.Entries[i].Final) }</div>
+												if r.Entries[i].CalledSkrew {
+													<div class="score-cell-tag">📢 Skrew</div>
+												}
+											}
+										</td>
+									}
+								}
+								<td><strong>{ FormatScore(g.TotalScore(i)) }</strong></td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	}
+}
