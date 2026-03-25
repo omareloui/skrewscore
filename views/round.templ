@@ -28,33 +28,6 @@ templ Round(g *game.Game, r *game.Round, gameID string, errMsg string) {
 				</span>
 			}
 		</div>
-		if !g.SoloMode {
-			<div class="field">
-				<label>Team Scoring Mode</label>
-				<div class="mode-toggle">
-					<button
-						type="button"
-						class={ "mode-btn", templ.KV("active", r.Mode == game.ModeSum) }
-						hx-post={ fmt.Sprintf("/game/%s/set-round-mode", gameID) }
-						hx-vals='{"mode":"sum"}'
-						hx-target="#main"
-						hx-swap="innerHTML"
-					>
-						Sum (add both)
-					</button>
-					<button
-						type="button"
-						class={ "mode-btn", templ.KV("active", r.Mode == game.ModeAverage) }
-						hx-post={ fmt.Sprintf("/game/%s/set-round-mode", gameID) }
-						hx-vals='{"mode":"average"}'
-						hx-target="#main"
-						hx-swap="innerHTML"
-					>
-						Average (mean)
-					</button>
-				</div>
-			</div>
-		}
 		if r.Number >= 3 && (r.LoserDoubled || !g.LoserDoubleUsed) {
 			<div class="field">
 				<label>Loser's Double</label>
@@ -90,13 +63,13 @@ templ Round(g *game.Game, r *game.Round, gameID string, errMsg string) {
 					if g.SoloMode {
 						<div class="field">
 							<label>Score</label>
-							<input type="text" name={ fmt.Sprintf("score_%d_0", i) } placeholder="e.g. 10+5" autocomplete="off"/>
+							<input type="text" inputmode="decimal" name={ fmt.Sprintf("score_%d_0", i) } placeholder="e.g. 10+5" autocomplete="off"/>
 						</div>
 					} else {
 						for pi, p := range team.Players {
 							<div class="field">
 								<label>{ p.Name }</label>
-								<input type="text" name={ fmt.Sprintf("score_%d_%d", i, pi) } placeholder="e.g. 10+5" autocomplete="off"/>
+								<input type="text" inputmode="decimal" name={ fmt.Sprintf("score_%d_%d", i, pi) } placeholder="e.g. 10+5" autocomplete="off"/>
 							</div>
 						}
 					}

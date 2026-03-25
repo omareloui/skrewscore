@@ -79,7 +79,6 @@ func Start(w http.ResponseWriter, r *http.Request) {
 	for i := range g.Rounds {
 		g.Rounds[i] = game.Round{
 			Number:      i + 1,
-			Mode:        game.ModeSum,
 			Entries:     make([]game.RoundEntry, len(g.Teams)),
 			SkrewCaller: -1,
 		}
@@ -146,29 +145,6 @@ func ToggleLoserDouble(w http.ResponseWriter, r *http.Request) {
 	render(w, r, views.Round(g, g.CurrentRoundData(), g.ID, ""))
 }
 
-func SetRoundMode(w http.ResponseWriter, r *http.Request) {
-	id := extractGameID(r.URL.Path)
-	r.ParseForm()
-
-	g, err := mongodb.LoadGame(id)
-	if err != nil || g == nil {
-		render(w, r, views.NotFound())
-		return
-	}
-
-	cur := g.CurrentRoundData()
-	if cur != nil {
-		if r.FormValue("mode") == "average" {
-			cur.Mode = game.ModeAverage
-		} else {
-			cur.Mode = game.ModeSum
-		}
-		g.Rounds[g.CurrentRound-1] = *cur
-		mongodb.SaveGame(g)
-	}
-
-	render(w, r, views.Round(g, g.CurrentRoundData(), g.ID, ""))
-}
 
 func SubmitRound(w http.ResponseWriter, r *http.Request) {
 	id := extractGameID(r.URL.Path)
@@ -216,25 +192,14 @@ func SubmitRound(w http.ResponseWriter, r *http.Request) {
 		}
 
 		var teamScore float64
-		if g.SoloMode || len(rawScores) == 1 {
-			teamScore = rawScores[0]
-		} else if cur.Mode == game.ModeAverage {
-			sum := 0.0
-			for _, s := range rawScores {
-				sum += s
-			}
-			teamScore = sum / float64(len(rawScores))
-		} else {
-			for _, s := range rawScores {
-				teamScore += s
-			}
+		for _, s := range rawScores {
+			teamScore += s
 		}
 
 		entries[i] = game.RoundEntry{
 			RawScores:   rawScores,
 			TeamScore:   teamScore,
 			CalledSkrew: i == skrewCaller,
-			Mode:        cur.Mode,
 		}
 	}
 

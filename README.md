@@ -31,7 +31,6 @@ Both env vars are optional and fall back to defaults.
 | POST   | `/start`                      | Create game → redirect to game URL |
 | POST   | `/start-new`                  | HTMX: return setup partial         |
 | GET    | `/game/<id>`                         | View/edit game in progress or done      |
-| POST   | `/game/<id>/set-round-mode`          | Toggle sum/average for teams            |
 | POST   | `/game/<id>/toggle-loser-double`     | Toggle the loser's double for the round |
 | POST   | `/game/<id>/submit-round`            | Lock a round with scores                |
 

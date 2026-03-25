@@ -7,12 +7,6 @@ import (
 
 const TotalRounds = 5
 
-type TeamMode string
-
-const (
-	ModeSum     TeamMode = "sum"
-	ModeAverage TeamMode = "average"
-)
 
 type Player struct {
 	Name string `bson:"name"`
@@ -34,13 +28,11 @@ type RoundEntry struct {
 	RawScores   []float64 `bson:"raw_scores"`
 	TeamScore   float64   `bson:"team_score"`
 	CalledSkrew bool      `bson:"called_skrew"`
-	Mode        TeamMode  `bson:"mode"`
 	Final       float64   `bson:"final"`
 }
 
 type Round struct {
 	Number       int          `bson:"number"`
-	Mode         TeamMode     `bson:"mode"`
 	Entries      []RoundEntry `bson:"entries"`
 	Locked       bool         `bson:"locked"`
 	SkrewCaller  int          `bson:"skrew_caller"`

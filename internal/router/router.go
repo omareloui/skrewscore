@@ -17,8 +17,6 @@ func Router(w http.ResponseWriter, r *http.Request) {
 		handlers.Start(w, r)
 	case p == "/start-new" && m == "POST":
 		handlers.StartNew(w, r)
-	case strings.HasPrefix(p, "/game/") && strings.HasSuffix(p, "/set-round-mode") && m == "POST":
-		handlers.SetRoundMode(w, r)
 	case strings.HasPrefix(p, "/game/") && strings.HasSuffix(p, "/toggle-loser-double") && m == "POST":
 		handlers.ToggleLoserDouble(w, r)
 	case strings.HasPrefix(p, "/game/") && strings.HasSuffix(p, "/submit-round") && m == "POST":

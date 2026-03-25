@@ -31,7 +31,6 @@ Both env vars are optional and default to the values above.
 | POST   | `/start`                      | Create game → redirect to game URL |
 | POST   | `/start-new`                  | HTMX: return setup partial         |
 | GET    | `/game/<uuid>`                | View/edit game in progress or done |
-| POST   | `/game/<id>/set-round-mode`      | Toggle sum/average for teams            |
 | POST   | `/game/<id>/toggle-loser-double` | Toggle the loser's double for the round |
 | POST   | `/game/<id>/submit-round`        | Lock a round with scores                |
 
@@ -68,10 +67,7 @@ calls **"Skrew"** to end the round — but if they're wrong, they're penalized.
 
 The game is played either **individually** (each person for themselves) or in **teams of 2**.
 
-**Team scoring modes** (selected before each round):
-
-- **Sum** — the team's round score is the sum of both players' card values.
-- **Average** — the team's round score is the mean of both players' card values.
+**Team scoring:** the team's round score is the sum of both players' card values.
 
 ---
 
