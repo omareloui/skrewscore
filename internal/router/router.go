@@ -21,6 +21,10 @@ func Router(w http.ResponseWriter, r *http.Request) {
 		handlers.ToggleLoserDouble(w, r)
 	case strings.HasPrefix(p, "/game/") && strings.HasSuffix(p, "/submit-round") && m == "POST":
 		handlers.SubmitRound(w, r)
+	case strings.HasPrefix(p, "/game/") && strings.HasSuffix(p, "/preview/ws") && m == "GET":
+		handlers.GamePreviewWS(w, r)
+	case strings.HasPrefix(p, "/game/") && strings.HasSuffix(p, "/preview") && m == "GET":
+		handlers.GamePreview(w, r)
 	case strings.HasPrefix(p, "/game/") && m == "GET":
 		handlers.Game(w, r)
 	default:

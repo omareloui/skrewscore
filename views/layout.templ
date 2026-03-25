@@ -11,6 +11,7 @@ templ Layout(content templ.Component) {
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 			<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
 			<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+			<script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script>
 			<style>
 				:root {
 					--bg: #0f0f13;
@@ -174,6 +175,15 @@ templ Layout(content templ.Component) {
 				}
 				.badge-skrew {
 					background: var(--danger);
+					color: #fff;
+				}
+				.badge-done {
+					background: var(--surface2);
+					color: var(--muted);
+					border: 1px solid var(--border);
+				}
+				.badge-live {
+					background: var(--accent);
 					color: #fff;
 				}
 				.scoreboard {

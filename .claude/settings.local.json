@@ -5,7 +5,8 @@
       "Bash(go build:*)",
       "Bash(go vet:*)",
       "Bash(go mod:*)",
-      "Bash(make templ:*)"
+      "Bash(make templ:*)",
+      "Bash(go get:*)"
     ]
   }
 }

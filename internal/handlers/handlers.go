@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"math"
@@ -9,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gorilla/websocket"
 	gonanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/omareloui/skrewscore/internal/eval"
 	"github.com/omareloui/skrewscore/internal/game"
@@ -16,7 +18,80 @@ import (
 	"github.com/omareloui/skrewscore/views"
 )
 
-const ID_LENGTH = 5
+const (
+	idLength   = 5
+	wsInterval = 500 * time.Millisecond
+)
+
+var wsUpgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool { return true },
+}
+
+func GamePreview(w http.ResponseWriter, r *http.Request) {
+	id := extractGameID(r.URL.Path)
+	g, err := mongodb.LoadGame(id)
+	if err != nil {
+		log.Println("mongodb.LoadGame:", err)
+		http.Error(w, "DB error", http.StatusInternalServerError)
+		return
+	}
+	if g == nil {
+		renderFull(w, r, views.NotFound())
+		return
+	}
+	renderFull(w, r, views.Preview(g, id, findWinners(g)))
+}
+
+func GamePreviewWS(w http.ResponseWriter, r *http.Request) {
+	id := extractGameID(r.URL.Path)
+
+	conn, err := wsUpgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println("ws upgrade:", err)
+		return
+	}
+	defer conn.Close()
+
+	sendBoard := func(g *game.Game) error {
+		var buf bytes.Buffer
+		if err := views.PreviewBoard(g, findWinners(g)).Render(r.Context(), &buf); err != nil {
+			return err
+		}
+		return conn.WriteMessage(websocket.TextMessage, buf.Bytes())
+	}
+
+	g, err := mongodb.LoadGame(id)
+	if err != nil || g == nil {
+		return
+	}
+	lastRound := g.CurrentRound
+	lastDone := g.Done
+	if err := sendBoard(g); err != nil {
+		return
+	}
+
+	ticker := time.NewTicker(wsInterval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-r.Context().Done():
+			return
+		case <-ticker.C:
+			g, err = mongodb.LoadGame(id)
+			if err != nil || g == nil {
+				return
+			}
+			if g.CurrentRound != lastRound || g.Done != lastDone {
+				lastRound = g.CurrentRound
+				lastDone = g.Done
+				if err := sendBoard(g); err != nil {
+					return
+				}
+			}
+		}
+	}
+}
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	renderFull(w, r, views.Setup())
@@ -32,7 +107,7 @@ func Start(w http.ResponseWriter, r *http.Request) {
 	}
 
 	g := &game.Game{
-		ID:          gonanoid.Must(ID_LENGTH),
+		ID:          gonanoid.Must(idLength),
 		CreatedAt:   time.Now(),
 		DoubleRound: doubleRound,
 	}
@@ -144,7 +219,6 @@ func ToggleLoserDouble(w http.ResponseWriter, r *http.Request) {
 
 	render(w, r, views.Round(g, g.CurrentRoundData(), g.ID, ""))
 }
-
 
 func SubmitRound(w http.ResponseWriter, r *http.Request) {
 	id := extractGameID(r.URL.Path)
